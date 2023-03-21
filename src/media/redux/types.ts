@@ -68,7 +68,7 @@ export type UploadAction = (
   | FileUpdateAction
   | UploadStartedAction
   | UploadFinishedAction
-  | UploadCanceledAction
+  | UploadingCanceledAction
   | UploadingStartedAction
   | UploadingFinishedAction
 )
