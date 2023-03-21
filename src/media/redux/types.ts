@@ -4,10 +4,10 @@ export const FILES_ADDED = "FILES_ADDED";
 export const FILE_REMOVED = "FILE_REMOVED";
 export const FILE_UPDATED = "FILE_UPDATED";
 export const UPLOADING_STARTED = "UPLOADING_STARTED";
-export const UPLOADING_FINISHED = "UPLOADING_STARTED";
+export const UPLOADING_FINISHED = "UPLOADING_FINISHED";
+export const UPLOADING_CANCELED = "UPLOADING_CANCELED";
 export const UPLOAD_STARTED = "UPLOAD_STARTED";
 export const UPLOAD_FINISHED = "UPLOAD_FINISHED";
-export const UPLOAD_CANCELED = "UPLOAD_CANCELED";
 
 
 export type FilesAddedAction = {
@@ -50,9 +50,8 @@ export type UploadingFinishedAction = {
 }
 
 
-export type UploadCanceledAction = {
-  type: typeof UPLOAD_CANCELED,
-  payload: UploadedFile
+export type UploadingCanceledAction = {
+  type: typeof UPLOADING_CANCELED,
 }
 
 

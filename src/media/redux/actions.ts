@@ -5,6 +5,7 @@ import {
   FILE_UPDATED, 
   UPLOADING_FINISHED, 
   UPLOADING_STARTED, 
+  UPLOADING_CANCELED, 
   UPLOAD_FINISHED, 
   UPLOAD_STARTED 
 } from "./types";
@@ -60,5 +61,12 @@ export function startUploading() {
 export function finishUploading() {
   return {
     type: UPLOADING_FINISHED,
+  }
+}
+
+
+export function cancelUploading() {
+  return {
+    type: UPLOADING_CANCELED,
   }
 }

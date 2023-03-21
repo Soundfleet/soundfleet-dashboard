@@ -19,6 +19,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AppState } from "../../../redux/store";
 import {
   addFiles, 
+  cancelUploading, 
   finishUpload, 
   finishUploading, 
   removeFile, 
@@ -45,6 +46,7 @@ interface UploadProps {
   finishUpload: (file: UploadedFile) => void,
   startUploading: () => void,
   finishUploading: () => void,
+  cancelUploading: () => void,
 }
 
 const Upload: React.FC<UploadProps> = (
@@ -110,6 +112,13 @@ const Upload: React.FC<UploadProps> = (
     )
   }
 
+  function handleCancel() {
+    if (currentFile) {
+      currentFile.cancelTokenSource.cancel();
+    }
+    cancelUploading();
+  }
+
   React.useEffect(() => {
     if (uploading && currentFile === null) {
       const [first, ...rest] = fileList;
@@ -127,6 +136,9 @@ const Upload: React.FC<UploadProps> = (
           finishUpload(first);
           finishUploading();
         });
+      }
+      else {
+        finishUploading();
       }
     }
   }, [uploading, currentFile])
@@ -155,12 +167,24 @@ const Upload: React.FC<UploadProps> = (
                     textAlign: "right"
                   }}
                 >
-                  <Button 
-                    variant="contained"
-                    onClick={() => startUploading()}
-                  >
-                    Upload
-                  </Button>
+                  {
+                    uploading ? (
+                      <Button 
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleCancel()}
+                      >
+                        Cancel uploading
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="contained"
+                        onClick={() => startUploading()}
+                      >
+                        Upload
+                      </Button>
+                    )
+                  }
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -277,6 +301,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
   finishUpload: (file: UploadedFile) => dispatch(finishUpload(file)),
   startUploading: () => dispatch(startUploading()),
   finishUploading: () => dispatch(finishUploading()),
+  cancelUploading: () => dispatch(cancelUploading()),
 });
 
 

@@ -8,6 +8,7 @@ import {
   UPLOADING_FINISHED, 
   UPLOADING_STARTED, 
   UploadState, 
+  UPLOADING_CANCELED, 
   UPLOAD_FINISHED, 
   UPLOAD_STARTED 
 } from "./types";
@@ -75,6 +76,13 @@ export const uploadReducer = (
       return {
         ...state,
         currentFile: null
+      }
+
+    case UPLOADING_CANCELED:
+      return {
+        ...state,
+        currentFile: null,
+        uploading: false
       }
 
     default:
