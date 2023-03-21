@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom"
+import LoginRequired from "./auth/components/LoginRequired"
 import LoginView from "./auth/views/LoginView"
 import Layout from "./components/Layout"
 import UploadView from "./media/views/UploadView"
@@ -19,7 +20,9 @@ export default function AppRoutes() {
         <Route 
           path="/"
           element={
-            <HomePage />
+            <LoginRequired>
+              <HomePage />
+            </LoginRequired>
           }
         />
         <Route 

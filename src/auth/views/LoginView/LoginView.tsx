@@ -1,11 +1,14 @@
 import { toast } from "react-hot-toast";
-import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { Navigate, useLocation } from "react-router-dom";
 import ApiClient from "../../../utils/ApiClient";
 import LoginForm from "../../components/LoginForm"
+import { useAuth } from "../../providers/AuthProvider";
 
 
 const LoginView: React.FC = () => {
-  const [session, setSession] = useLocalStorage("SESSION", undefined);
+  const auth = useAuth();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   async function login(
     username: string,
@@ -20,7 +23,7 @@ const LoginView: React.FC = () => {
         {username: username, password: password}
       )
       setSubmitting(false);
-      setSession(response.data);
+      auth.login(response.data);
     }
     catch (exception: any) {
       setSubmitting(false);
@@ -30,6 +33,8 @@ const LoginView: React.FC = () => {
       toast.error(exception.toString());
     }
   }
+
+  if (auth.isAuthenticated()) return <Navigate to={from} />
 
   return (
     <LoginForm
