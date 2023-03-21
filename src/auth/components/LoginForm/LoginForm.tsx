@@ -1,10 +1,15 @@
 import React from 'react';
-import { FormikValues, useFormik } from 'formik';
+import { FormikErrors, FormikValues, useFormik } from 'formik';
 import * as yup from 'yup';
 import { Button, Grid, TextField } from '@mui/material';
 
 interface LoginFormProps {
-  onSubmit: (username: string, password: string) => void;
+  onSubmit: (
+    username: string,
+    password: string,
+    setSubmitting: (v: boolean) => void,
+    setErrors: (e: FormikErrors<FormikValues>) => void
+  ) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
@@ -18,8 +23,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       .required("Password is required")
   });
 
-  const handleSubmit = (values: FormikValues, ) => {
-    onSubmit(values.username, values.password, );
+  const handleSubmit = (
+    values: FormikValues,
+    setSubmitting: (v: boolean) => void,
+    setErrors: (e: FormikErrors<FormikValues>) => void
+  ) => {
+    onSubmit(values.username, values.password, setSubmitting, setErrors);
   };
 
   const formik = useFormik({
@@ -27,7 +36,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         username: '',
         password: ''
       },
-      onSubmit: handleSubmit,
+      onSubmit: (values, {setSubmitting, setErrors}) => {
+        handleSubmit(values, setSubmitting, setErrors)
+      },
       validationSchema: validationSchema
   })
 
@@ -51,6 +62,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           <TextField 
             fullWidth
             variant="outlined"
+            type="password"
             name="password" 
             label="Password"
             value={formik.values.password}

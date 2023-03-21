@@ -10,6 +10,8 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { Toaster } from 'react-hot-toast';
+import LoadingIndicator from './components/LoadingIndicator';
 
 
 const root = ReactDOM.createRoot(
@@ -19,6 +21,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+        />
+        <LoadingIndicator />
         <App />
       </Provider>
     </BrowserRouter>
