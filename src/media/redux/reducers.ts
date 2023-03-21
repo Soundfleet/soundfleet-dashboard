@@ -1,6 +1,16 @@
 import axios from "axios";
 import { UploadedFile } from "../interfaces/UploadedFile";
-import { FILES_ADDED, FILE_REMOVED, FILE_UPDATED, UploadAction, UploadState } from "./types";
+import { 
+  FILES_ADDED, 
+  FILE_REMOVED, 
+  FILE_UPDATED, 
+  UploadAction, 
+  UPLOADING_FINISHED, 
+  UPLOADING_STARTED, 
+  UploadState, 
+  UPLOAD_FINISHED, 
+  UPLOAD_STARTED 
+} from "./types";
 
 export const uploadReducer = (
   state: UploadState = {
@@ -41,6 +51,30 @@ export const uploadReducer = (
       return {
         ...state,
         files: {...files}
+      }
+
+    case UPLOADING_STARTED:
+      return {
+        ...state,
+        uploading: true
+      }
+
+    case UPLOADING_FINISHED:
+      return {
+        ...state,
+        uploading: false
+      }
+
+    case UPLOAD_STARTED:
+      return {
+        ...state,
+        currentFile: action.payload
+      }
+
+    case UPLOAD_FINISHED:
+      return {
+        ...state,
+        currentFile: null
       }
 
     default:

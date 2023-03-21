@@ -1,13 +1,37 @@
 import React from "react";
-import { Box, CircularProgress, IconButton, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, useTheme } from "@mui/material";
+import { 
+  Box, 
+  Button, 
+  CircularProgress, 
+  IconButton, 
+  MenuItem, 
+  Select, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableRow, 
+  TextField, 
+  useTheme 
+} from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { ThunkDispatch } from "redux-thunk";
 import { AppState } from "../../../redux/store";
-import { addFiles, removeFile, updateFile } from "../../redux/actions";
+import {
+  addFiles, 
+  finishUpload, 
+  finishUploading, 
+  removeFile, 
+  startUpload, 
+  startUploading, 
+  updateFile 
+} from "../../redux/actions";
 import { connect } from "react-redux";
 import { UploadedFile } from "../../interfaces/UploadedFile";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ApiClient from "../../../utils/ApiClient";
+import { useAuth } from "../../../auth/providers/AuthProvider";
+import { toast } from "react-hot-toast";
 
 
 interface UploadProps {
@@ -17,6 +41,10 @@ interface UploadProps {
   addFiles: (files: File[]) => void,
   removeFile: (filename: string) => void,
   updateFile: (file: UploadedFile) => void,
+  startUpload: (file: UploadedFile) => void,
+  finishUpload: (file: UploadedFile) => void,
+  startUploading: () => void,
+  finishUploading: () => void,
 }
 
 const Upload: React.FC<UploadProps> = (
@@ -27,10 +55,15 @@ const Upload: React.FC<UploadProps> = (
     addFiles,
     removeFile,
     updateFile,
+    startUpload,
+    finishUpload,
+    startUploading,
+    finishUploading,
   }
 ) => {
   const theme = useTheme();
-  const apiClient = new ApiClient();
+  const auth = useAuth();
+  const apiClient = new ApiClient(auth.session?.access);
   const {getRootProps, getInputProps} = useDropzone({
     accept: {
       "audio/aac": [".aac"],
@@ -45,6 +78,8 @@ const Upload: React.FC<UploadProps> = (
     }
   });
 
+  const fileList = Object.values(files);
+
   function upload(file: UploadedFile) {
     const payload = new FormData();
     payload.set("file", file.file);
@@ -58,6 +93,7 @@ const Upload: React.FC<UploadProps> = (
     if (file.genre) {
       payload.set("genre", file.genre);
     }
+
     return apiClient.post(
       "/media/upload/",
       payload,
@@ -76,7 +112,22 @@ const Upload: React.FC<UploadProps> = (
 
   React.useEffect(() => {
     if (uploading && currentFile === null) {
-      
+      const [first, ...rest] = fileList;
+      if (first) {
+        startUpload(first);
+        upload(first).then(() => {
+          toast.success(`File ${first.file.name} uploaded successfully.`)
+          removeFile(first.file.name);
+          finishUpload(first);
+          if (rest.length === 0) {
+            finishUploading();
+          }
+        }).catch((exception) => {
+          toast.error(exception.toString());
+          finishUpload(first);
+          finishUploading();
+        });
+      }
     }
   }, [uploading, currentFile])
 
@@ -86,6 +137,7 @@ const Upload: React.FC<UploadProps> = (
         textAlign="center"
         border={`dashed 2px ${theme.palette.divider}`}
         padding={theme.spacing(3)}
+        marginBottom={theme.spacing(3)}
         {...getRootProps({className: "dropzone"})}
       >
         <input {...getInputProps()} />
@@ -93,19 +145,43 @@ const Upload: React.FC<UploadProps> = (
         <em>(Only '*.aac', '*.mp3', '*.ogg', '*.wav', '*.flac' and '*.mpeg' files will be accepted)</em>
       </Box>
       {
-        files ? (
+        fileList.length > 0 ? (
           <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  sx={{
+                    textAlign: "right"
+                  }}
+                >
+                  <Button 
+                    variant="contained"
+                    onClick={() => startUploading()}
+                  >
+                    Upload
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
               {
-                Object.values(files).map((file: UploadedFile) => {
+                fileList.map((file: UploadedFile) => {
                   return (
                     <TableRow key={file.file.name}>
                       <TableCell>{file.file.name}</TableCell>
                       <TableCell>
                         <Select
+                          fullWidth
                           variant="outlined"
                           value={file.track_type}
                           disabled={uploading}
+                          onChange={(e) => {
+                            updateFile({
+                              ...file,
+                              track_type: e.target.value as "music" | "ad"
+                            })
+                          }}
                         >
                           <MenuItem value="music">Music</MenuItem>
                           <MenuItem value="ad">Ad</MenuItem>
@@ -113,6 +189,7 @@ const Upload: React.FC<UploadProps> = (
                       </TableCell>
                       <TableCell>
                         <TextField 
+                          fullWidth
                           value={file.artist}
                           label="Artist"
                           disabled={uploading}
@@ -126,6 +203,7 @@ const Upload: React.FC<UploadProps> = (
                       </TableCell>
                       <TableCell>
                         <TextField 
+                          fullWidth
                           value={file.title}
                           label="Title"
                           disabled={uploading}
@@ -139,6 +217,7 @@ const Upload: React.FC<UploadProps> = (
                       </TableCell>
                       <TableCell>
                         <TextField 
+                          fullWidth
                           value={file.genre}
                           label="Genre"
                           disabled={uploading}
@@ -158,12 +237,14 @@ const Upload: React.FC<UploadProps> = (
                           uploading ? (
                             <CircularProgress
                               variant="determinate"
-                              value={currentFile?.uploadProgress} 
+                              value={file.uploadProgress} 
                             />
                           ) : (
-                            <IconButton onClick={() => removeFile(file.file.name)}>
-                              <DeleteIcon />
-                            </IconButton>
+                            <>
+                              <IconButton onClick={() => removeFile(file.file.name)}>
+                                <DeleteIcon />
+                              </IconButton>
+                            </>
                           )
                         }
                       </TableCell>
@@ -192,6 +273,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
   addFiles: (files: File[]) => dispatch(addFiles(files)),
   removeFile: (filename: string) => dispatch(removeFile(filename)),
   updateFile: (file: UploadedFile) => dispatch(updateFile(file)),
+  startUpload: (file: UploadedFile) => dispatch(startUpload(file)),
+  finishUpload: (file: UploadedFile) => dispatch(finishUpload(file)),
+  startUploading: () => dispatch(startUploading()),
+  finishUploading: () => dispatch(finishUploading()),
 });
 
 

@@ -1,3 +1,5 @@
+import { Container, Grid, Typography } from "@mui/material";
+import React from "react";
 import { toast } from "react-hot-toast";
 import { Navigate, useLocation } from "react-router-dom";
 import ApiClient from "../../../utils/ApiClient";
@@ -37,14 +39,30 @@ const LoginView: React.FC = () => {
   if (auth.isAuthenticated()) return <Navigate to={from} />
 
   return (
-    <LoginForm
-      onSubmit={(
-        username,
-        password,
-        setSubmitting,
-        setErrors
-      ) => login(username, password, setSubmitting, setErrors)
-    } />
+    <Container
+      maxWidth="md"
+      sx={{
+        mt: 8
+      }}
+    >
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h4">
+            Login to Soundfleet Dashboard
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <LoginForm
+            onSubmit={(
+              username,
+              password,
+              setSubmitting,
+              setErrors
+            ) => login(username, password, setSubmitting, setErrors)
+          } />
+        </Grid>
+      </Grid>
+    </Container>
   )
 }
 

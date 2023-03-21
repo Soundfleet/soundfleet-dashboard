@@ -22,7 +22,12 @@ const AuthProvider: React.FC<AuthProviderProps> = (
     children
   }
 ) => {
-  const [session, setSession] = useLocalStorage("SESSION", undefined);
+  const [storedSession, setStoredSession] = useLocalStorage("SESSION", undefined);
+  const [session, setSession] = React.useState<Session | undefined>(storedSession);
+
+  React.useEffect(() => {
+    setStoredSession(session);
+  }, [session])
 
   const login = (newSession: Session) => {
     // after refresh there is only new access token

@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" variant="outlined" fullWidth>Submit</Button>
+          <Button type="submit" variant="contained" fullWidth>Submit</Button>
         </Grid>
       </Grid>
     </form>

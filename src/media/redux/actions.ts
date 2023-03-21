@@ -1,5 +1,13 @@
 import { UploadedFile } from "../interfaces/UploadedFile";
-import { FILES_ADDED, FILE_REMOVED, FILE_UPDATED } from "./types";
+import { 
+  FILES_ADDED, 
+  FILE_REMOVED, 
+  FILE_UPDATED, 
+  UPLOADING_FINISHED, 
+  UPLOADING_STARTED, 
+  UPLOAD_FINISHED, 
+  UPLOAD_STARTED 
+} from "./types";
 
 
 export function addFiles(files: File[]) {
@@ -22,5 +30,35 @@ export function updateFile(file: UploadedFile) {
   return {
     type: FILE_UPDATED,
     payload: file
+  }
+}
+
+
+export function startUpload(file: UploadedFile) {
+  return {
+    type: UPLOAD_STARTED,
+    payload: file
+  }
+}
+
+
+export function finishUpload(file: UploadedFile) {
+  return {
+    type: UPLOAD_FINISHED,
+    payload: file
+  }
+}
+
+
+export function startUploading() {
+  return {
+    type: UPLOADING_STARTED,
+  }
+}
+
+
+export function finishUploading() {
+  return {
+    type: UPLOADING_FINISHED,
   }
 }

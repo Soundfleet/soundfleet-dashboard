@@ -28,7 +28,9 @@ export default function AppRoutes() {
         <Route 
           path="/media/upload/"
           element={
-            <UploadView />
+            <LoginRequired>
+              <UploadView />
+            </LoginRequired>
           }
         />
       </Route>
