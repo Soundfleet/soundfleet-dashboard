@@ -171,7 +171,7 @@ const DeviceForm: React.FC<DeviceFormProps> = (
                     {...params}
                     required
                     fullWidth
-                    label="Schedule"
+                    label="Calendar"
                     value={formik.values.calendar || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleCalendarChange(e.target.value)}
                     InputProps={{
