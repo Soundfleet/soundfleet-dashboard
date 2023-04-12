@@ -99,6 +99,9 @@ const ListView: React.FC<ListViewProps> = (
       playlists.splice(playlists.findIndex((obj: Playlist) => obj.id === deleting?.id), 1)
       setPlaylists([...playlists]);
       setDeleting(null);
+      setCount(current => {
+        return current - 1;
+      });
     }).catch(exception => {
       toast.error(exception.message)
     })

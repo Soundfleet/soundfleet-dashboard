@@ -86,6 +86,9 @@ const ListView: React.FC<ListViewProps> = (
       audioTracks.splice(audioTracks.findIndex((obj: AudioTrack) => obj.id === deleting?.id), 1)
       setAudioTracks([...audioTracks]);
       setDeleting(null);
+      setCount(current => {
+        return current - 1;
+      });
     }).catch(exception => {
       toast.error(exception)
     })
