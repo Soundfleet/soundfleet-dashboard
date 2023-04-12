@@ -1,4 +1,6 @@
 import axios, { Axios, AxiosRequestConfig, CancelToken } from "axios";
+import { toast } from "react-hot-toast";
+import { setSession } from "../auth/redux/actions";
 import { store } from "../redux/store";
 
 
@@ -37,16 +39,38 @@ class ApiClient {
   axiosInstance: Axios;
 
   constructor(accessToken?: string) {
-    this.accessToken = accessToken;
     this.axiosInstance = axios.create({
       baseURL: process.env.REACT_APP_API_URL
-    })
+    });
+    this.axiosInstance.interceptors.request.use(
+      function (config) {
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+      }
+    );
+    this.axiosInstance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (exception) => {
+        if (exception.response && exception.response.status === 401) {
+          localStorage.removeItem("SESSION");
+          store.dispatch(setSession(undefined));
+          toast.error(
+              "Your session has expired, please log in again.",
+          );
+        }
+        throw exception;
+      }
+    )
   }
 
   async get(
     path: string, 
-    params: Params,
-    headers: Headers,
+    params: Params = {},
+    headers: Headers = {},
     cancelToken?: CancelToken,
     extraOptions?: Options
   ) {
@@ -56,7 +80,7 @@ class ApiClient {
         path,
         this.getHttpOptions(
           params,
-          {...this.getHeaders(), ...headers},
+          headers,
           cancelToken,
           extraOptions
         ),
@@ -83,7 +107,7 @@ class ApiClient {
         payload,
         this.getHttpOptions(
           {},
-          {...this.getHeaders(), ...headers},
+          headers,
           cancelToken,
           extraOptions
         ),
@@ -96,12 +120,56 @@ class ApiClient {
     }
   }
 
-  private getHeaders() {
-    const headers: {[Key: string]: any} = {};
-    if (this.accessToken) {
-      headers["Authorization"] = `Bearer ${this.accessToken}`;
+  async patch(
+    path: string, 
+    payload: Params = {},
+    headers: Headers = {},
+    cancelToken?: CancelToken,
+    extraOptions?: Options
+  ) {
+    store.dispatch(appLoading(1))
+    try {
+      const response = await this.axiosInstance.patch(
+        path,
+        payload,
+        this.getHttpOptions(
+          {},
+          headers,
+          cancelToken,
+          extraOptions
+        ),
+      );
+      store.dispatch(appLoading(-1));
+      return response;
+    } catch (error) {
+      store.dispatch(appLoading(-1));
+      throw error;
     }
-    return headers;
+  }
+
+  async delete(
+    path: string, 
+    headers: Headers = {},
+    cancelToken?: CancelToken,
+    extraOptions?: Options
+  ) {
+    store.dispatch(appLoading(1))
+    try {
+      const response = await this.axiosInstance.delete(
+        path,
+        this.getHttpOptions(
+          {},
+          headers,
+          cancelToken,
+          extraOptions
+        ),
+      );
+      store.dispatch(appLoading(-1));
+      return response;
+    } catch (exception: any) {
+      store.dispatch(appLoading(-1));
+      throw exception;
+    }
   }
 
   private getHttpOptions(

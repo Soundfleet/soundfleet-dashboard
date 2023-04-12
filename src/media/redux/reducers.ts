@@ -1,4 +1,3 @@
-import axios from "axios";
 import { UploadedFile } from "../interfaces/UploadedFile";
 import { 
   FILES_ADDED, 
@@ -33,7 +32,6 @@ export const uploadReducer = (
           title: "",
           genre: "",
           uploadProgress: 0,
-          cancelTokenSource: axios.CancelToken.source()
         }
       })
       return {

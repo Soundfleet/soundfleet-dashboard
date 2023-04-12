@@ -33,6 +33,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ApiClient from "../../../utils/ApiClient";
 import { useAuth } from "../../../auth/providers/AuthProvider";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 
 interface UploadProps {
@@ -61,6 +62,7 @@ const Upload: React.FC<UploadProps> = (
     finishUpload,
     startUploading,
     finishUploading,
+    cancelUploading
   }
 ) => {
   const theme = useTheme();
@@ -100,7 +102,7 @@ const Upload: React.FC<UploadProps> = (
       "/media/upload/",
       payload,
       {},
-      file.cancelTokenSource.token,
+      file.cancelTokenSource?.token,
       {
         onUploadProgress: (e: ProgressEvent) => {
           updateFile({
@@ -114,7 +116,7 @@ const Upload: React.FC<UploadProps> = (
 
   function handleCancel() {
     if (currentFile) {
-      currentFile.cancelTokenSource.cancel();
+      currentFile.cancelTokenSource?.cancel();
     }
     cancelUploading();
   }
@@ -122,6 +124,7 @@ const Upload: React.FC<UploadProps> = (
   React.useEffect(() => {
     if (uploading && currentFile === null) {
       const [first, ...rest] = fileList;
+      first.cancelTokenSource = axios.CancelToken.source();
       if (first) {
         startUpload(first);
         upload(first).then(() => {
@@ -132,7 +135,7 @@ const Upload: React.FC<UploadProps> = (
             finishUploading();
           }
         }).catch((exception) => {
-          toast.error(exception.toString());
+          toast.error(exception.message);
           finishUpload(first);
           finishUploading();
         });
@@ -141,7 +144,7 @@ const Upload: React.FC<UploadProps> = (
         finishUploading();
       }
     }
-  }, [uploading, currentFile])
+  })
 
   return (
     <>
@@ -164,7 +167,8 @@ const Upload: React.FC<UploadProps> = (
                 <TableCell
                   colSpan={7}
                   sx={{
-                    textAlign: "right"
+                    textAlign: "right",
+                    paddingRight: 0
                   }}
                 >
                   {
@@ -198,6 +202,7 @@ const Upload: React.FC<UploadProps> = (
                         <Select
                           fullWidth
                           variant="outlined"
+                          size="small"
                           value={file.track_type}
                           disabled={uploading}
                           onChange={(e) => {
@@ -216,6 +221,7 @@ const Upload: React.FC<UploadProps> = (
                           fullWidth
                           value={file.artist}
                           label="Artist"
+                          size="small"
                           disabled={uploading}
                           onChange={(e) => {
                             updateFile({
@@ -230,6 +236,7 @@ const Upload: React.FC<UploadProps> = (
                           fullWidth
                           value={file.title}
                           label="Title"
+                          size="small"
                           disabled={uploading}
                           onChange={(e) => {
                             updateFile({
@@ -244,6 +251,7 @@ const Upload: React.FC<UploadProps> = (
                           fullWidth
                           value={file.genre}
                           label="Genre"
+                          size="small"
                           disabled={uploading}
                           onChange={(e) => {
                             updateFile({

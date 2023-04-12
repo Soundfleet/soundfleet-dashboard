@@ -64,17 +64,10 @@ const themeSettings = () => {
           }
         }
       },
-      MuiTableHead: {
-        styleOverrides: {
-          root: {
-            background: palette.black[100]
-          }
-        }
-      },
       MuiTableRow: {
         styleOverrides: {
           root: {
-            '&:nth-child(even)': {
+            '&:nth-of-type(even)': {
               background: palette.black[100]
             }
           }

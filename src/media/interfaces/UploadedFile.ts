@@ -6,7 +6,7 @@ export interface UploadedFile {
   artist: string,
   title: string,
   genre: string,
-  cancelTokenSource: CancelTokenSource,
   uploadProgress: number,
+  cancelTokenSource?: CancelTokenSource,
   error?: string
 }

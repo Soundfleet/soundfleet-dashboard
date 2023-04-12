@@ -14,16 +14,15 @@ import {
   ListSubheader, 
   Toolbar 
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import MenuIcon from '@mui/icons-material/Menu';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import TodayIcon from '@mui/icons-material/Today';
 import UploadIcon from '@mui/icons-material/Upload';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { Link, Outlet } from 'react-router-dom';
+import Player from '../../player/components/Player';
 
 const drawerWidth = 240;
 
@@ -82,30 +81,22 @@ export default function Layout() {
           <div>Soundfleet Dashboard</div>
         </Toolbar>
         <Divider />
-        <List subheader={
-          <ListSubheader component="div" id="device-list">
-            DEVICES
-          </ListSubheader>
-        }>
+        <List>
           <ListItem disablePadding>
             <ListItemButton component={Link} to="/devices/">
-            <ListItemIcon>
-              <LaptopIcon />
-            </ListItemIcon>
-            <ListItemText primary="Devices" />
+              <ListItemIcon>
+                <LaptopIcon />
+              </ListItemIcon>
+              <ListItemText primary="Devices" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Device" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <CalendarMonthIcon />
-            </ListItemIcon>
-            <ListItemText primary="Calendars" />
+            <ListItemButton component={Link} to="/calendars/">
+              <ListItemIcon>
+                <CalendarMonthIcon />
+              </ListItemIcon>
+              <ListItemText primary="Calendars" />
+            </ListItemButton>
           </ListItem>
           <Divider />
         </List>
@@ -138,28 +129,20 @@ export default function Layout() {
           </ListSubheader>
         }>
           <ListItem disablePadding>
-            <ListItemIcon>
-              <QueueMusicIcon />
-            </ListItemIcon>
-            <ListItemText primary="Playlists" />
+            <ListItemButton component={Link} to="/music/playlists/">
+              <ListItemIcon>
+                <QueueMusicIcon />
+              </ListItemIcon>
+              <ListItemText primary="Playlists" />
+            </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemIcon>
-              <PlaylistAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Playlist" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText primary="Schedules" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Schedule" />
+            <ListItemButton component={Link} to="/music/schedules/">
+              <ListItemIcon>
+                <TodayIcon />
+              </ListItemIcon>
+              <ListItemText primary="Schedules" />
+            </ListItemButton>
           </ListItem>
         </List>
         <List subheader={
@@ -168,36 +151,31 @@ export default function Layout() {
           </ListSubheader>
         }>
           <ListItem disablePadding>
-            <ListItemIcon>
-              <QueueMusicIcon />
-            </ListItemIcon>
-            <ListItemText primary="Playlists" />
+            <ListItemButton component={Link} to="/ads/playlists/">
+              <ListItemIcon>
+                <QueueMusicIcon />
+              </ListItemIcon>
+              <ListItemText primary="Playlists" />
+            </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemIcon>
-              <PlaylistAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Playlist" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText primary="Schedules" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Add Schedule" />
+            <ListItemButton component={Link} to="/ads/schedules/">
+              <ListItemIcon>
+                <TodayIcon />
+              </ListItemIcon>
+              <ListItemText primary="Schedules" />
+            </ListItemButton>
           </ListItem>
         </List>
+        <Divider />
       </Drawer>
       <Container
         component="main"
         maxWidth="xl"
+        sx={{marginTop: 3}}
       >
         <Toolbar />
+        <Player />
         <Outlet />
       </Container>
     </Box>

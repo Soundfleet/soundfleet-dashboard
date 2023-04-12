@@ -16,41 +16,41 @@ export type FilesAddedAction = {
 }
 
 
-export type FileRemovedAction = {
+export type RemoveFileAction = {
   type: typeof FILE_REMOVED,
   payload: string
 }
 
 
-export type FileUpdateAction = {
+export type UpdateFileAction = {
   type: typeof FILE_UPDATED,
   payload: UploadedFile
 }
 
 
-export type UploadStartedAction = {
+export type StartUploadAction = {
   type: typeof UPLOAD_STARTED,
   payload: UploadedFile
 }
 
 
-export type UploadFinishedAction = {
+export type FinishUploadAction = {
   type: typeof UPLOAD_FINISHED,
   payload: UploadedFile
 }
 
 
-export type UploadingStartedAction = {
+export type StartUploadingAction = {
   type: typeof UPLOADING_STARTED,
 }
 
 
-export type UploadingFinishedAction = {
+export type FinishUploadingAction = {
   type: typeof UPLOADING_FINISHED,
 }
 
 
-export type UploadingCanceledAction = {
+export type CancelUploadingAction = {
   type: typeof UPLOADING_CANCELED,
 }
 
@@ -64,11 +64,11 @@ export type UploadState = {
 
 export type UploadAction = (
   FilesAddedAction
-  | FileRemovedAction
-  | FileUpdateAction
-  | UploadStartedAction
-  | UploadFinishedAction
-  | UploadingCanceledAction
-  | UploadingStartedAction
-  | UploadingFinishedAction
+  | RemoveFileAction
+  | UpdateFileAction
+  | StartUploadAction
+  | FinishUploadAction
+  | CancelUploadingAction
+  | StartUploadingAction
+  | FinishUploadingAction
 )

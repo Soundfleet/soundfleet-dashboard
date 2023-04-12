@@ -1,11 +1,17 @@
 import React from "react";
+import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { AppState } from "../../redux/store";
 import { AuthContextType } from "../interfaces/AuthContextType";
 import { Session } from "../interfaces/Session";
+import { setSession } from "../redux/actions";
 
 
 interface AuthProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode,
+  session: Session | undefined,
+  setSession: (session: Session | undefined) => void
 }
 
 
@@ -19,22 +25,27 @@ export const AuthContext = React.createContext<AuthContextType>(null!);
 
 const AuthProvider: React.FC<AuthProviderProps> = (
   {
-    children
+    children,
+    session,
+    setSession
   }
 ) => {
   const [storedSession, setStoredSession] = useLocalStorage("SESSION", undefined);
-  const [session, setSession] = React.useState<Session | undefined>(storedSession);
 
   React.useEffect(() => {
-    setStoredSession(session);
-  }, [session])
+    if (session === undefined && storedSession !== undefined) {
+      setSession(storedSession);
+    }
+  })
 
   const login = (newSession: Session) => {
     // after refresh there is only new access token
-    setSession({...session, ...newSession});
+    setStoredSession({...session, ...newSession});
+    setSession({...session, ...newSession})
   }
 
   const logout = () => {
+    setStoredSession(undefined);
     setSession(undefined);
   }
 
@@ -48,4 +59,13 @@ const AuthProvider: React.FC<AuthProviderProps> = (
 }
 
 
-export default AuthProvider;
+const mapStateToProps = (state: AppState) => ({
+  session: state.auth.session
+});
+
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
+  setSession: (session: Session | undefined) => dispatch(setSession(session))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthProvider);

@@ -32,7 +32,7 @@ const LoginView: React.FC = () => {
       if (exception.response) {
         setErrors(exception.response.data);
       }
-      toast.error(exception.toString());
+      toast.error(exception.message);
     }
   }
 
