@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton } from "@mui/material";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useMatch } from "react-router-dom";
@@ -9,7 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ScheduleForm from "../../../components/ScheduleForm";
 import { AdBlock } from "../../../interfaces/AdBlock";
 import AdBlockForm from "../../../components/AdBlockForm";
-import { parse, format } from "date-fns";
+import { parse } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationDialog from "../../../../components/ConfirmationDialog";
 import { Calendar, EventProps } from "react-big-calendar";
@@ -23,7 +23,6 @@ const DetailView: React.FC = () => {
   const apiClient = new ApiClient(auth.session?.access);
   const [schedule, setSchedule] = React.useState<Schedule | undefined | null>(undefined);
   const [adBlocks, setAdBlocks] = React.useState<AdBlock[] | undefined>(undefined);
-  const [editing, setEditing] = React.useState<AdBlock | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState<AdBlock | null>(null);
 
