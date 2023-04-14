@@ -9,5 +9,6 @@ export interface Device {
   connection_policy: "allow" | "deny",
   timezone_name: string,
   last_sync: string | null,
-  debug: boolean
+  debug: boolean,
+  connected: boolean
 }

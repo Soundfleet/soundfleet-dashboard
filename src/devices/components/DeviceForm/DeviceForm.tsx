@@ -85,7 +85,10 @@ const DeviceForm: React.FC<DeviceFormProps> = (
     if (device) {
       apiClient.patch(
         `/devices/${device.uuid}/`,
-        values,
+        {
+          ...values,
+          calendar: values.calendar.id
+        },
       ).then(response => {
         setSubmitting(false);
         toast.success("Device updated successfully.");
@@ -103,7 +106,10 @@ const DeviceForm: React.FC<DeviceFormProps> = (
     else {
       apiClient.post(
         '/devices/',
-        values,
+        {
+          ...values,
+          calendar: values.calendar.id
+        },
       ).then((response) => {
         setSubmitting(false);
         toast.success("Device created successfully.");
@@ -163,7 +169,7 @@ const DeviceForm: React.FC<DeviceFormProps> = (
             getOptionLabel={(calendar: Calendar) => calendar.name}
             value={formik.values.calendar}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            onChange={(e: any, value: any) => formik.setFieldValue('schedule', value)}
+            onChange={(e: any, value: any) => formik.setFieldValue('calendar', value)}
             renderInput={
               params => {
                 return (

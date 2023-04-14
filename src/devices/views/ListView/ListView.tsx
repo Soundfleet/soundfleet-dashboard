@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, InputAdornment, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
+import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, InputAdornment, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
 import React from "react";
 import { connect } from "react-redux";
 import { useAuth } from "../../../auth/providers/AuthProvider";
@@ -15,7 +15,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import toast from "react-hot-toast";
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import PhonelinkIcon from '@mui/icons-material/Phonelink';
 
 interface ListViewProps {
   filtersKey: string | undefined,
@@ -33,6 +35,8 @@ const ListView: React.FC<ListViewProps> = (
   const [devices, setDevices] = React.useState<Device[]>([]);
   const [count, setCount] = React.useState(0);
   const [editing, setEditing] = React.useState<Device | null>(null);
+  const [connecting, setConnecting] = React.useState<Device | null>(null);
+  const [connectingErrors, setConnectingErrors] = React.useState<string>("");
   const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState<Device | null>(null);
 
@@ -104,6 +108,21 @@ const ListView: React.FC<ListViewProps> = (
       toast.error(exception.message)
     })
   }
+
+  const handleConnect = (device: Device) => {
+    const apiClient = new ApiClient(auth.session?.access);
+    apiClient.post(
+      `/devices/${device.uuid}/accept-key/`
+    ).then(() => {
+      toast.success('Connected deleted successfully.');
+      devices.splice(devices.findIndex((obj: Device) => obj.uuid === device?.uuid), 1, {...device, connected: true})
+      setDevices([...devices]);
+      setConnecting(null);
+    }).catch(exception => {
+      toast.error(exception.message);
+      setConnectingErrors(exception.response.data)
+    })
+  }
   
   const handleEdit = (device: Device) => {
     devices.splice(devices.findIndex((obj: Device) => obj.uuid === device?.uuid), 1, device)
@@ -131,6 +150,25 @@ const ListView: React.FC<ListViewProps> = (
         onCancel={() => setDeleting(null)}
       >
         Are you sure you want to delete device? This action is irreversible.
+      </ConfirmationDialog>
+      <ConfirmationDialog 
+        open={connecting !== null} 
+        title="Connect device"
+        variant="info"
+        onConfirm={() => handleConnect(connecting!)}
+        onCancel={() => {
+          setConnecting(null);
+          setConnectingErrors("");
+        }}
+      >
+        {
+          connectingErrors ? <Alert severity="error">{connectingErrors}</Alert> : <></>
+        }
+        <Typography>
+          You are about to connect device to salt minion service.
+          After this action you will be able to deploy player on 
+          connected device.
+        </Typography>
       </ConfirmationDialog>
       <Filters
         filtersKey="deviceList"
@@ -193,11 +231,19 @@ const ListView: React.FC<ListViewProps> = (
                 <TableCell>UUID</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Calendar</TableCell>
-                <TableCell>Playback priority</TableCell>
+                <Tooltip title="If set to music then ads will not break playback">
+                  <TableCell>
+                    Playback priority
+                  </TableCell>
+                </Tooltip>
                 <TableCell>Connection policy</TableCell>
                 <TableCell>Timezone</TableCell>
                 <TableCell>Last sync</TableCell>
-                <TableCell>Debug</TableCell>
+                <Tooltip title="Determines if device is added to inventory by accepting salt minion key">
+                  <TableCell>
+                    Connected
+                  </TableCell>
+                </Tooltip>
                 <TableCell/>
               </TableRow>
             </TableHead>
@@ -211,14 +257,29 @@ const ListView: React.FC<ListViewProps> = (
                       </TableCell>
                       <TableCell>{device.name}</TableCell>
                       <TableCell>{device.calendar?.name}</TableCell>
-                      <TableCell>{device.playback_priority}</TableCell>
+                      <TableCell>
+                        {device.playback_priority === 'music' ? 'Music over ads' : 'Ads over music'}
+                      </TableCell>
                       <TableCell>{device.connection_policy}</TableCell>
                       <TableCell>{device.timezone_name}</TableCell>
                       <TableCell>{device.last_sync}</TableCell>
-                      <TableCell>{device.debug}</TableCell>
+                      <TableCell>
+                        {
+                          device.connected ? <CheckCircleIcon color="success"/> : <RemoveCircleIcon color="error" />
+                        }
+                      </TableCell>
                       <TableCell
                         sx={{textAlign: "right"
                       }}>
+                        {
+                          !device.connected ? (
+                            <Tooltip title="Connect device">
+                              <IconButton onClick={() => setConnecting(device)}>
+                                <PhonelinkIcon />
+                              </IconButton>
+                            </Tooltip>
+                          ) : <></>
+                        }
                         <Tooltip title="Edit">
                           <IconButton onClick={() => setEditing(device)}>
                             <EditIcon />

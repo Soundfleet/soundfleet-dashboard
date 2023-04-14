@@ -72,6 +72,7 @@ const DetailView: React.FC = () => {
             size="small" 
             startIcon={<SyncIcon />}
             onClick={() => handleSync(device)}
+            disabled={!device.connected}
           >
             Sync
           </Button>
@@ -81,6 +82,7 @@ const DetailView: React.FC = () => {
             startIcon={<RocketLaunchIcon />}
             sx={{ml: 2}}
             onClick={() => handleDeploy(device)}
+            disabled={!device.connected}
           >
             Deploy
           </Button>
