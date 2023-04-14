@@ -120,14 +120,7 @@ const ListView: React.FC<ListViewProps> = (
       setConnecting(null);
     }).catch(exception => {
       toast.error(exception.message);
-      let errorMsg = exception.response.data;
-      if (typeof errorMsg !== 'string' && errorMsg !== undefined) {
-        errorMsg = errorMsg.toString();
-        setConnectingErrors(errorMsg);
-      }
-      else {
-        setConnectingErrors('An unknown error occurred while connecting device.')
-      }
+      setConnectingErrors(exception.response.data.toString());
     })
   }
   
