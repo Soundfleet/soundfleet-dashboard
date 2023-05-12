@@ -16,6 +16,9 @@ a {
   text-decoration: none;
   color: #007aff;
 }
+a.white {
+  color: #fff;
+}
 
 .rbc-current-time-indicator {
     display: none;

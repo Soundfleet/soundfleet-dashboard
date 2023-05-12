@@ -53,7 +53,7 @@ export default function Layout() {
           >
             <MenuIcon />
           </IconButton>
-          <div>Soundfleet Dashboard</div>
+          <div><Link to="/" className={"white"}>Soundfleet Dashboard</Link></div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -78,7 +78,7 @@ export default function Layout() {
           >
             <MenuIcon />
           </IconButton>
-          <div>Soundfleet Dashboard</div>
+          <div><Link to="/">Soundfleet Dashboard</Link></div>
         </Toolbar>
         <Divider />
         <List>
