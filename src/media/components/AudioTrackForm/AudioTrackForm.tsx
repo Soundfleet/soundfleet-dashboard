@@ -44,17 +44,21 @@ const AudioTrackForm: React.FC<AudioTrackFormProps> = (
     apiClient.patch(
       `/media/audio-tracks/${audioTrack.id}/`,
       values,
-    ).then(response => {
-      setSubmitting(false);
-      toast.success("Audio track updated successfully.");
-      onSuccess(response.data);
-    }).catch(exception => {
-      if (exception.response.status === 400) {
-        setErrors(exception.response.data);
+    ).then(
+      response => {
+        setSubmitting(false);
+        toast.success("Audio track updated successfully.");
+        onSuccess(response.data);
       }
-      toast.error(exception.message);
-      setSubmitting(false);
-    })
+    ).catch(
+      exception => {
+        if (exception.response && exception.response.status === 400) {
+          setErrors(exception.response.data);
+        }
+        toast.error(exception.message);
+        setSubmitting(false);
+      }
+    )
   };
 
   return (
