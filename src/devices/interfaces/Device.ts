@@ -5,6 +5,7 @@ export interface Device {
   name: string,
   description: string,
   calendar: Calendar | null,
+  volume: number,
   playback_priority: "music" | "ads",
   connection_policy: "allow" | "deny",
   timezone_name: string,

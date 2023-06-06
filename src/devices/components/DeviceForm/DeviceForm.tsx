@@ -66,6 +66,7 @@ const DeviceForm: React.FC<DeviceFormProps> = (
       name: device?.name || "",
       description: device?.description || "",
       calendar: device?.calendar || null,
+      volume: device?.volume || 100,
       playback_priority: device?.playback_priority || "music",
       connection_policy: device?.connection_policy || "allow",
       timezone_name: device?.timezone_name || "UTC",
@@ -194,6 +195,26 @@ const DeviceForm: React.FC<DeviceFormProps> = (
               }
             }
 
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField 
+            fullWidth
+            type="number"
+            variant="outlined"
+            name="volume"
+            label="Volume"
+            InputProps={{
+              inputProps: {
+                min: 0,
+                max: 100,
+              }
+            }}
+            value={formik.values.volume}
+            onChange={formik.handleChange}
+            disabled={formik.isSubmitting || disabled}
+            error={formik.touched.volume && Boolean(formik.errors.volume)}
+            helperText={formik.errors.volume}
           />
         </Grid>
         <Grid item xs={12}>
