@@ -264,7 +264,11 @@ const ListView: React.FC<ListViewProps> = (
                       <TableCell>{device.connection_policy}</TableCell>
                       <TableCell>{device.timezone_name}</TableCell>
                       <TableCell>
-                        {formatDistance(device.last_sync ? new Date(device.last_sync) : new Date(), new Date())}
+                        {
+                          device.last_sync ? (
+                            formatDistance(new Date(device.last_sync), new Date())
+                          ) : null
+                        }
                       </TableCell>
                       <TableCell>
                         {
