@@ -112,18 +112,6 @@ const DetailView: React.FC<DetailViewProps> = (
           <Box>
             <Typography variant="h4">Playlist detail</Typography>
           </Box>
-          <Box flexGrow={1}/>
-          <Box>
-            <Button 
-              variant="contained" 
-              size="small" 
-              startIcon={<PlaylistAddIcon />}
-              component={Link}
-              to={`/ads/playlists/${playlist.id}/add-tracks/?track_type=ad`}
-            >
-              Add tracks
-            </Button>
-          </Box>
         </Grid>
         <Grid item xs={12}>
           <PlaylistForm 
@@ -134,6 +122,18 @@ const DetailView: React.FC<DetailViewProps> = (
         <Grid item xs={12} sx={{display: "flex"}}>
           <Box>
             <Typography variant="h5">Track list</Typography>
+          </Box>
+          <Box flexGrow={1}/>
+          <Box>
+            <Button 
+              variant="contained" 
+              size="small" 
+              startIcon={<PlaylistAddIcon />}
+              component={Link}
+              to={`/ads/playlists/${playlist.id}/add-tracks/?track_type=ad`}
+            >
+              Add
+            </Button>
           </Box>
         </Grid>
         <Grid item xs={12}>
