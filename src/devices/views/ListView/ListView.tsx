@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import PhonelinkIcon from '@mui/icons-material/Phonelink';
+import formatDistance from "date-fns/formatDistance";
 
 interface ListViewProps {
   filtersKey: string | undefined,
@@ -262,7 +263,9 @@ const ListView: React.FC<ListViewProps> = (
                       </TableCell>
                       <TableCell>{device.connection_policy}</TableCell>
                       <TableCell>{device.timezone_name}</TableCell>
-                      <TableCell>{device.last_sync}</TableCell>
+                      <TableCell>
+                        {formatDistance(device.last_sync ? new Date(device.last_sync) : new Date(), new Date())}
+                      </TableCell>
                       <TableCell>
                         {
                           device.connected ? <CheckCircleIcon color="success"/> : <RemoveCircleIcon color="error" />
